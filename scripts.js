@@ -1,3 +1,4 @@
+// Book object
 function Book(title, author, pages, read) {
     this.title = title;
     this.author = author;
@@ -8,15 +9,24 @@ function Book(title, author, pages, read) {
     }
 }
 
-const Library = [];
-
-addBookToLibrary = (Book) => {
-    Library.push(Book);
-}
-
+// Initialize vars
 let title = author = pages = null;
 const modal = document.querySelector("#bookModal");
-// const title = modal.querySelector("#titleInput");
+
+// Library object
+const Library = [];
+// List of displayed books
+const alreadyShown = [];
+
+// Add to library function
+addBookToLibrary = (book) => {
+    if (Library.includes(book)){
+        confirm("Oops! This book is already in your library.");
+    }
+    else {
+        Library.push(book);
+    }
+}
 
 // Listen to form inputs
 document.addEventListener("input", (event) => {
@@ -33,66 +43,18 @@ document.addEventListener("input", (event) => {
 
     if (event.target.matches("#pagesInput")) {
         console.log("3rd: ", event.target.value);
-        pages = event.target.value;
+        pages = event.target.value;        
     }
 
 });
 
-// Update library display
-displayLibrary = () => {
-
-    let library = document.querySelector("#library");
-
-    let column = document.createElement("div");
-    column.className = "col-4 col-md-3 col-lg-2 align-items-stretch mb-5";
-    // column.setAttribute("style", "max-width: 18rem;");
-    // column.setAttribute("style", "height: 18rem;");
-
-
-    let bookCard = document.createElement("div");
-    bookCard.className = `card text-white bg-primary mb-5`;
-    // bookCard.setAttribute("style", "width: 100%;");
-    // bookCard.setAttribute("style", "height: 18rem;");
-    bookCard.setAttribute("id", "bookCard");
-
-
-    let bookTitle = document.createElement("h3");
-    bookTitle.className = "card-header";
-    bookTitle.setAttribute("style", "font-weight: bold;");
-    bookTitle.setAttribute("style", "background-color: #2d4e69;");
-
-    bookTitle.textContent = `${title}`;
-
-    let bookBody = document.createElement("div");
-    bookBody.className = "card-body";
-
-    
-    let bookAuthor = document.createElement("h5");
-    bookAuthor.className = "card-title";
-    bookAuthor.textContent = `by ${author}`;
-
-
-    let bookPages = document.createElement("p");
-    bookPages.textContent = `Pages: ${pages}`;
-
-    let bookRead = document.createElement("p");
-    bookRead.textContent = `${pages}`;
-
-
-
-    // library.appendChild(bookCard);
-    // bookCard.appendChild(bookTitle);
-    // bookCard.appendChild(bookBody);
-    // bookBody.appendChild(bookAuthor);
-    // bookBody.appendChild(bookPages);
-    library.appendChild(column);
-    column.appendChild(bookCard);
-    bookCard.appendChild(bookTitle);
-    bookCard.appendChild(bookBody);
-    bookBody.appendChild(bookAuthor);
-    bookBody.appendChild(bookPages);  
-
-}
+// Validate that pages filed is a number
+let pagesInput = document.querySelector("#pagesInput");
+pagesInput.addEventListener('keyup', (event) => {
+    if (event.which != 8 && event.which != 0 && event.which < 48 || event.which > 57) {
+        this.value = this.value.replace(/\D/g, "");
+    }
+});
 
 // Trigger save book if you hit ENTER
 modal.addEventListener("keyup", (event) => {
@@ -103,19 +65,40 @@ modal.addEventListener("keyup", (event) => {
     }
 });
 
-// Listen till book is saved
+// Save book
 document.addEventListener("click", (event) => {
 
     if(event.target.matches("#saveBtn")) {
         console.log("ok, i l save ya");
+
+        if (title == "" || author == "" || pages == "") {
+        }
+        
         let book = new Book(title, author, pages, "already read");
         addBookToLibrary(book);
-        displayLibrary();
-        console.log(Library);
+        displayLibrary(Library);    
 
+        console.log(Library);
 
     }
 });
+
+// Delete book
+removeBook = (book, i) => {
+    Library.splice(i, 1);
+    // console.table(Library);
+    alreadyShown.splice(i, 1);
+    // console.table(alreadyShown);
+
+    let library = document.querySelector("#library");
+    let column = document.querySelector(`#column-${book.title}`);
+    console.log(column);
+
+    library.removeChild(column);
+
+    displayLibrary(Library);
+
+};
 
 // Autofocus to Modal
 $('#bookModal').on('shown.bs.modal', function () {
@@ -128,9 +111,83 @@ $('#bookModal').on('hidden.bs.modal', function () {
     readCheck.checked = false;
 });
 
+displayLibrary = (collection) => {
+    
+    collection.forEach( (item) => {
+        // Display every new item of the Library
+        if (!alreadyShown.includes(item.title))  {
+            let library = document.querySelector("#library");
 
+            let column = document.createElement("div");
+            column.className = "col-6 col-md-4 col-lg-3 align-items-stretch mb-5";
+            column.setAttribute("id", `column-${item.title}`);
+            library.appendChild(column);
 
+            let bookCard = document.createElement("div");
+            bookCard.className = `card text-white bg-primary mb-5`;
+            bookCard.setAttribute("id", "bookCard");
+            column.appendChild(bookCard);
+            
+            let cardHeader = document.createElement("div");
+            cardHeader.className = "card-header container-fluid";
+            cardHeader.setAttribute("style", "background-color: #2d4e69;");
+            bookCard.appendChild(cardHeader);
 
+            let headerRow = document.createElement("row");
+            headerRow.className = `row`;
+            cardHeader.appendChild(headerRow);
+
+            let col1 = document.createElement("col");
+            col1.className = `col`;
+            headerRow.appendChild(col1);
+
+            let bookTitle = document.createElement("h5");
+            bookTitle.className = "bookTitle";
+            bookTitle.setAttribute("style", "font-weight: bold;");
+            bookTitle.textContent = `${item.title}`;
+            col1.appendChild(bookTitle);
+
+            let col2 = document.createElement("col");
+            col2.className = `col`;
+            headerRow.appendChild(col2);
+
+            let closeBtn = document.createElement("button");
+            closeBtn.className = "btn float-right";
+            closeBtn.textContent = "x";
+            closeBtn.type = "button";
+            closeBtn.setAttribute("id", `${item.title}`);
+            col2.appendChild(closeBtn);
+
+            ////////////////////////////////////////////////////////////////
+            let bookBody = document.createElement("div");
+            bookBody.className = "card-body";
+            bookCard.appendChild(bookBody);
+        
+            let bookAuthor = document.createElement("h5");
+            bookAuthor.className = "card-title";
+            bookAuthor.textContent = `by ${item.author}`;
+            bookBody.appendChild(bookAuthor);
+        
+            let bookPages = document.createElement("p");
+            bookPages.textContent = `Pages: ${item.pages}`;
+            bookBody.appendChild(bookPages);
+
+        
+            let bookRead = document.createElement("p");
+            bookRead.textContent = `${item.read}`;
+        
+            alreadyShown.push(item.title);
+            // console.log(item.title);
+            //////////////////////////////////////
+            // i.addEventListener("click", (event) => {
+            //     console.log("click");
+            //     removeBook(book);
+            //     console.log("fucntion called");
+            // })
+            /////////////////////////////////
+        }
+    });
+};
 
 const Sapiens = new Book("Sapiens", "altzazli", 330, "have already read");
 const Fofonka = new Book("Fofonka", "Xavi", 120, "not read yet");
@@ -139,6 +196,35 @@ addBookToLibrary(Sapiens);
 addBookToLibrary(Fofonka);
 addBookToLibrary(XEsio);
 
-// console.log(Sapiens.info());
+// console.table(Library);
+displayLibrary(Library);
+// console.log(Library.length);
 
-console.log(Library);
+document.addEventListener("click", (event) => {
+
+/*     Library.forEach( (item) => {
+        // if(event.target.matches(`#saveBtn-${item.title}`)) {
+
+        if(event.target.matches(`button.btn.float-right`)) {
+            console.log("x button event listener");
+            removeBook(item);
+
+        }
+}); */
+
+for (let i=0; i<Library.length; i++) {
+
+    if (event.target.id == `${Library[i].title}`) {
+        console.log("x button event listener");
+        removeBook(Library[i], i);
+    }
+}
+
+
+
+
+
+
+
+
+});

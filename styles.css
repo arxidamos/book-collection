@@ -30,7 +30,6 @@ img:hover {
     color: #4CAF50;
 }
 
-
 .container {
     margin-top: 3rem;
     margin-bottom: 3rem;
@@ -60,15 +59,14 @@ h4 {
     background-color: chocolate;
 }
 
-/* #library {
-    background-color: darkcyan;
-    color: whitesmoke;
-} */
-
-
-
 #bookCard {
     width: 100%;
     height: 100%;
 
 }
+
+.card-header {
+    height: 5rem;
+    padding: 0px;
+}
+
