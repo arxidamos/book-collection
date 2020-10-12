@@ -11,6 +11,7 @@ function Book(title, author, pages, read) {
 
 // Initialize vars
 let title = author = pages = null;
+let read = null;
 const modal = document.querySelector("#bookModal");
 
 // Library object
@@ -48,6 +49,18 @@ document.addEventListener("input", (event) => {
 
 });
 
+// Listen to read checkbox
+const readCheck = document.querySelector("#readCheck");
+readCheck.addEventListener("change", (event) => {
+    console.log("Initially we ve got ", read);
+    if (event.target.checked) {
+        read = true;
+    } else {
+        read = false;
+    }
+    console.log("After change:", read);
+});
+
 // Validate that pages filed is a number
 let pagesInput = document.querySelector("#pagesInput");
 pagesInput.addEventListener('keyup', (event) => {
@@ -74,7 +87,7 @@ document.addEventListener("click", (event) => {
         if (title == "" || author == "" || pages == "") {
         }
         
-        let book = new Book(title, author, pages, "already read");
+        let book = new Book(title, author, pages, read);
         addBookToLibrary(book);
         displayLibrary(Library);    
 
@@ -111,6 +124,7 @@ $('#bookModal').on('hidden.bs.modal', function () {
     readCheck.checked = false;
 });
 
+// Display book cards
 displayLibrary = (collection) => {
     
     collection.forEach( (item) => {
@@ -138,7 +152,7 @@ displayLibrary = (collection) => {
             cardHeader.appendChild(headerRow);
 
             let col1 = document.createElement("col");
-            col1.className = `col`;
+            col1.className = `col-10`;
             headerRow.appendChild(col1);
 
             let bookTitle = document.createElement("h5");
@@ -148,7 +162,7 @@ displayLibrary = (collection) => {
             col1.appendChild(bookTitle);
 
             let col2 = document.createElement("col");
-            col2.className = `col`;
+            col2.className = `col-2`;
             headerRow.appendChild(col2);
 
             let closeBtn = document.createElement("button");
@@ -173,58 +187,37 @@ displayLibrary = (collection) => {
             bookBody.appendChild(bookPages);
 
         
-            let bookRead = document.createElement("p");
-            bookRead.textContent = `${item.read}`;
-        
+            let bookRead = document.createElement("button");
+            if (item.read === true) {
+                bookRead.textContent = `Read`;
+            } else {
+                bookRead.textContent = `Not read yet`;
+            }
+            bookRead.setAttribute("type", "button");
+            bookRead.className = "btn  bookRead ";
+            bookBody.appendChild(bookRead);
+
             alreadyShown.push(item.title);
-            // console.log(item.title);
-            //////////////////////////////////////
-            // i.addEventListener("click", (event) => {
-            //     console.log("click");
-            //     removeBook(book);
-            //     console.log("fucntion called");
-            // })
-            /////////////////////////////////
         }
     });
 };
 
-const Sapiens = new Book("Sapiens", "altzazli", 330, "have already read");
-const Fofonka = new Book("Fofonka", "Xavi", 120, "not read yet");
-const XEsio = new Book("XEsio", "Marika", 70, "have already read");
+const Sapiens = new Book("Sapiens", "altzazli", 330, true);
+const Fofonka = new Book("Fofonka", "Xavi", 120, true);
+const XEsio = new Book("XEsio", "Marika", 70, false);
 addBookToLibrary(Sapiens);
 addBookToLibrary(Fofonka);
 addBookToLibrary(XEsio);
 
 // console.table(Library);
 displayLibrary(Library);
-// console.log(Library.length);
 
+// X remove button
 document.addEventListener("click", (event) => {
-
-/*     Library.forEach( (item) => {
-        // if(event.target.matches(`#saveBtn-${item.title}`)) {
-
-        if(event.target.matches(`button.btn.float-right`)) {
+    for (let i=0; i<Library.length; i++) {
+        if (event.target.id == `${Library[i].title}`) {
             console.log("x button event listener");
-            removeBook(item);
-
+            removeBook(Library[i], i);
         }
-}); */
-
-for (let i=0; i<Library.length; i++) {
-
-    if (event.target.id == `${Library[i].title}`) {
-        console.log("x button event listener");
-        removeBook(Library[i], i);
     }
-}
-
-
-
-
-
-
-
-
 });

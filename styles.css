@@ -62,11 +62,35 @@ h4 {
 #bookCard {
     width: 100%;
     height: 100%;
-
+    border-style:  solid;
+    border-radius: 4%;
+    border-width: 2px 4px 4px 2px;
+    border-color: black;
 }
 
 .card-header {
     height: 5rem;
-    padding: 0px;
+    /* padding: 0px; */
 }
 
+.col-2 {
+    padding-right: 0px;
+    margin-top: -15px;
+}
+
+.btn.float-right {
+    /* padding: 0px; */
+    margin-top: -8px;
+    margin-right: -17px;
+    color: whitesmoke;
+    font-weight: bolder;
+    border-style: solid;
+    border-width: 1px 2px 3px 1px;
+    background-color: tomato;
+    border-color: black;
+    border-radius: 50%;
+}
+
+.bookRead {
+    margin-left: -14px;
+}
