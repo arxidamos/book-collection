@@ -186,7 +186,7 @@ displayLibrary = (collection) => {
             bookPages.textContent = `Pages: ${item.pages}`;
             bookBody.appendChild(bookPages);
 
-        
+          
             let bookRead = document.createElement("button");
             if (item.read === true) {
                 bookRead.textContent = `Read`;
@@ -194,6 +194,8 @@ displayLibrary = (collection) => {
                 bookRead.textContent = `Not read yet`;
             }
             bookRead.setAttribute("type", "button");
+            bookRead.setAttribute("id", `btn-${item.title}`);
+            console.log(bookRead.id);
             bookRead.className = "btn  bookRead ";
             bookBody.appendChild(bookRead);
 
@@ -212,12 +214,22 @@ addBookToLibrary(XEsio);
 // console.table(Library);
 displayLibrary(Library);
 
-// X remove button
+// X button - Read button
 document.addEventListener("click", (event) => {
     for (let i=0; i<Library.length; i++) {
         if (event.target.id == `${Library[i].title}`) {
-            console.log("x button event listener");
             removeBook(Library[i], i);
+        }
+
+        if (event.target.id == `btn-${Library[i].title}`) {
+            // toggle read/not read button and stored var
+            if (event.target.textContent === `Read`) {
+                event.target.textContent = `Not read yet`;
+                Library[i].read = false;
+            } else {
+                event.target.textContent = `Read`;
+                Library[i].read = true;
+            }
         }
     }
 });
